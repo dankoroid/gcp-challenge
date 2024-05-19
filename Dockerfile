@@ -12,4 +12,5 @@ FROM openjdk:17-jdk-alpine
 ARG JAR_FILE=/home/gradle/src/build/libs/*.jar
 COPY --from=builder ${JAR_FILE} app.jar
 
+EXPOSE 8080
 CMD ["java","-jar","/app.jar"]
