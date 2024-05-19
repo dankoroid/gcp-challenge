@@ -1,16 +1,15 @@
 # Build stage
-FROM gradle:7.3.0-jdk17 AS build
+FROM gradle:7.4.0-jdk17 AS builder
+WORKDIR /home/gradle/src
 
-WORKDIR /
+# Copy local code to the container image.
+COPY . .
 
 RUN gradle bootJar --no-daemon
 
-# Run stage
-FROM amazoncorretto:17.0.11
+FROM openjdk:17-jdk-alpine
 
-VOLUME /tmp
-EXPOSE 8080
-
-COPY --from=build /build/libs/*.jar /app.jar
+ARG JAR_FILE=/home/gradle/src/build/libs/*.jar
+COPY --from=builder ${JAR_FILE} app.jar
 
 CMD ["java","-jar","/app.jar"]
